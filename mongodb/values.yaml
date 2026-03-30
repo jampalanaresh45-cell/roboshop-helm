@@ -1,7 +1,9 @@
 deployment:
-  image: 
-  repository: naresh1567/mongo
-  tag: "7.0"
-  imageVersion: v1
-  service:
+  image:
+    repository: naresh1567/mongo
+    tag: "7.0"
+    imageVersion: v1
+
+service:
   type: ClusterIP
+  port: 27017
