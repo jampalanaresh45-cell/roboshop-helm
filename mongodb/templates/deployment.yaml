@@ -1,65 +1,32 @@
-# apiVersion: apps/v1 
-# kind: Deployment
-# metadata:
-#   name: mongodb
-#   namespace: roboshop
-#   ########### Replica set labels ###############
-#   labels: 
-#     project: roboshop
-#     component: mongodb
-#     tier: db
-# spec:
-#   replicas: 1
-#   selector:
-#   ######### These are used to select pods ##############
-#     matchLabels:
-#       project: roboshop
-#       component: mongodb
-#       tier: db
-# ### pod definition ########
-
-#   template:
-#     metadata:
-#       labels:
-#           project: roboshop
-#           component: mongodb
-#           tier: db
-#     spec:
-#       containers:
-#       - name: mongodb
-#         image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | trim }}"
-#         imagePullPolicy: Always
-#         readinessProbe:
-#           tcpSocket:
-#             port: 27017
-#           initialDelaySeconds: 10
-#           periodSeconds: 10
-#         livenessProbe:
-#           tcpSocket:
-#             port: 27017
-#           initialDelaySeconds: 5
-#           periodSeconds: 5
-
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-mongodb
-  namespace: {{ .Release.Namespace }}
-  labels: 
-    app: {{ .Release.Name }}-mongodb
+  name: mongodb
+  namespace: roboshop
+  # these are replica set labels
+  labels:
+    project: roboshop
+    component: mongodb
+    tier: db
 spec:
   replicas: 1
   selector:
+    # these labels are used to select pods
     matchLabels:
-      app: {{ .Release.Name }}-mongodb
+      project: roboshop
+      component: mongodb
+      tier: db
+  # pod definition
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-mongodb
+        project: roboshop
+        component: mongodb
+        tier: db
     spec:
       containers:
       - name: mongodb
-        image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | trim }}"
+        image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageVersion }}"
         imagePullPolicy: Always
         readinessProbe:
           tcpSocket:

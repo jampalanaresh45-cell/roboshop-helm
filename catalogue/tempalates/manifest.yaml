@@ -1,103 +1,31 @@
-# apiVersion: v1 
-# kind: ConfigMap
-# metadata:
-#   name: catalogue
-#   namespace: roboshop
-# data:
-#     MONGO: "true"
-#     MONGO_URL: "{{ .Values.configmap.mongoURL }}"
-# ---
-# apiVersion: apps/v1 
-# kind: Deployment
-# metadata:
-#   name: catalogue
-#   namespace: roboshop
-#   ########### Replica set labels ###############
-#   labels: 
-#     project: roboshop
-#     component: catalogue
-#     tier: backend
-# spec:
-#   replicas: 1
-#   selector:
-#   ######### These are used to select pods ##############
-#     matchLabels:
-#       project: roboshop
-#       component: catalogue
-#       tier: backend
-# ### pod definition ########
-
-#   template:
-#     metadata:
-#       labels:
-#           project: roboshop
-#           component: catalogue
-#           tier: backend
-#     spec:
-#       containers:
-#       - name: catalogue
-#         image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageVersion }}"
-#         imagePullPolicy: Always
-#         envFrom:
-#         - configMapRef:
-#             name: catalogue
-#         ports:
-#         - name: liveness-port
-#           containerPort: 8080
-#         readinessProbe:
-#           httpGet:
-#             path: /health
-#             port: liveness-port
-#           failureThreshold: 1
-#           periodSeconds: 60
-          
-#         livenessProbe:
-#           httpGet:
-#             path: /health
-#             port: liveness-port
-#           failureThreshold: 1
-#           periodSeconds: 10
-# ---
-# apiVersion: v1 
-# kind: Service
-# metadata:
-#     name: catalogue
-#     namespace: roboshop
-# spec:    
-#     selector:
-#       project: roboshop
-#       component: catalogue
-#       tier: backend
-#     ports:
-#     - protocol: TCP
-#       port: 8080 ## service port
-#       targetPort: {{ .Values.service.targetPort }} ## container port
-
-apiVersion: v1 
+apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-catalogue
-  namespace: {{ .Release.Namespace }}
+  name: catalogue
+  namespace: roboshop
 data:
   MONGO: "true"
-  MONGO_URL: "{{ .Values.configmap.mongoURL }}"
+  MONGO_URL: {{ .Values.configmap.mongoURL }}
 ---
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-catalogue
-  namespace: {{ .Release.Namespace }}
-  labels: 
+  name: catalogue
+  namespace: roboshop
+  # these are replica set labels
+  labels:
     project: roboshop
     component: catalogue
     tier: backend
 spec:
   replicas: 1
   selector:
+    # these labels are used to select pods
     matchLabels:
       project: roboshop
       component: catalogue
       tier: backend
+  # pod definition
   template:
     metadata:
       labels:
@@ -107,11 +35,11 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: "{{ .Values.deployment.imageRepo | default "nginx" }}:{{ .Values.deployment.imageVersion | default "latest" }}"
+        image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageVersion}}"
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
-            name: {{ .Release.Name }}-catalogue
+            name: catalogue
         ports:
         - name: liveness-port
           containerPort: 8080
@@ -120,26 +48,25 @@ spec:
             path: /health
             port: liveness-port
           failureThreshold: 1
-          periodSeconds: 60
+          periodSeconds: 15
         livenessProbe:
           httpGet:
             path: /health
             port: liveness-port
           failureThreshold: 1
-          periodSeconds: 10
+          periodSeconds: 15
 ---
-apiVersion: v1 
+apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-catalogue
-  namespace: {{ .Release.Namespace }}
+  name: catalogue
+  namespace: roboshop
 spec:
-  type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
     project: roboshop
     component: catalogue
     tier: backend
   ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: {{ .Values.service.targetPort | default 8080 }}
+    - protocol: TCP
+      port: {{ .Values.service.servicePort }} # service port
+      targetPort: 8080 # container port
