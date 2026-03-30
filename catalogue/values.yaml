@@ -1,0 +1,5 @@
+deployment:
+  imageRepo: naresh1567/catalogue
+  imageVersion: v1
+service:
+  targetPort: 8080
