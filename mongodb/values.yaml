@@ -1,8 +1,7 @@
 deployment:
   image:
     repository: naresh1567/mongo
-    tag: "7.0"
-    imageVersion: v1
+    tag: "7.0-v1"
 
 service:
   type: ClusterIP
