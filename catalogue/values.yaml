@@ -2,4 +2,5 @@ deployment:
   imageRepo: naresh1567/catalogue
   imageVersion: v1
 service:
+  type: ClusterIP
   targetPort: 8080
