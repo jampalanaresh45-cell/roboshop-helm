@@ -1,29 +1,61 @@
+# apiVersion: apps/v1 
+# kind: Deployment
+# metadata:
+#   name: mongodb
+#   namespace: roboshop
+#   ########### Replica set labels ###############
+#   labels: 
+#     project: roboshop
+#     component: mongodb
+#     tier: db
+# spec:
+#   replicas: 1
+#   selector:
+#   ######### These are used to select pods ##############
+#     matchLabels:
+#       project: roboshop
+#       component: mongodb
+#       tier: db
+# ### pod definition ########
+
+#   template:
+#     metadata:
+#       labels:
+#           project: roboshop
+#           component: mongodb
+#           tier: db
+#     spec:
+#       containers:
+#       - name: mongodb
+#         image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | trim }}"
+#         imagePullPolicy: Always
+#         readinessProbe:
+#           tcpSocket:
+#             port: 27017
+#           initialDelaySeconds: 10
+#           periodSeconds: 10
+#         livenessProbe:
+#           tcpSocket:
+#             port: 27017
+#           initialDelaySeconds: 5
+#           periodSeconds: 5
+
 apiVersion: apps/v1 
 kind: Deployment
 metadata:
-  name: mongodb
-  namespace: roboshop
-  ########### Replica set labels ###############
+  name: {{ .Release.Name }}-mongodb
+  namespace: {{ .Release.Namespace }}
   labels: 
-    project: roboshop
-    component: mongodb
-    tier: db
+    app: {{ .Release.Name }}-mongodb
 spec:
   replicas: 1
   selector:
-  ######### These are used to select pods ##############
     matchLabels:
-      project: roboshop
-      component: mongodb
-      tier: db
-### pod definition ########
-
+      app: {{ .Release.Name }}-mongodb
   template:
     metadata:
       labels:
-          project: roboshop
-          component: mongodb
-          tier: db
+        app: {{ .Release.Name }}-mongodb
     spec:
       containers:
       - name: mongodb
