@@ -1,7 +1,8 @@
+configmap:
+  mongoURL: "mongodb://mongodb:27017/catalogue"
+
 deployment:
-  imageRepo: naresh1567/catalogue
-  imageVersion: "1.0"
-  configmap:
-    MONGO_URL: "mongodb://mongodb:27017/catalogue"
+  imageRepo: catalogue
+  imageVersion: "latest"
 service:
   servicePort: 8080 # default value
