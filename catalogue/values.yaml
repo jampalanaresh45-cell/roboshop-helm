@@ -3,6 +3,6 @@ configmap:
 
 deployment:
   imageRepo: catalogue
-  imageVersion: "latest"
+  imageVersion: "v1"
 service:
   servicePort: 8080 # default value
